@@ -1,0 +1,6 @@
+{
+  "name": "Rectifier Virtual Lab - Power Electronics Simulation Workbench",
+  "description": "Interactive Virtual Laboratory for Single-Phase & Three-Phase Uncontrolled and Controlled Rectifiers with real-time oscilloscope waveforms, animated circuits, harmonic FFT, and experimental observation tables.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
