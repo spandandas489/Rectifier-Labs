@@ -44,7 +44,7 @@ export default function App() {
 
   // Simulation Parameters State
   const [params, setParams] = useState<RectifierParameters>({
-    topology: 'single_phase_half_wave_uncontrolled',
+    topology: 'single_phase_full_wave_bridge_uncontrolled',
     loadType: 'R',
     voltagePeak: 100, // 100 V peak
     frequency: 50,    // 50 Hz

@@ -812,13 +812,15 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           </button>
 
           <div className="flex items-center bg-slate-800/80 rounded-lg p-0.5 border border-slate-700/60 text-xs">
-            {[0.5, 1, 2].map((s) => (
+            <span className="text-[10px] text-slate-400 px-1 font-sans hidden sm:inline">Speed:</span>
+            {[0.1, 0.25, 0.5, 1, 2].map((s) => (
               <button
                 key={s}
                 onClick={() => onSpeedChange(s)}
-                className={`px-2 py-0.5 rounded font-mono transition-colors ${
+                className={`px-1.5 sm:px-2 py-0.5 rounded font-mono transition-colors text-[11px] ${
                   speed === s ? 'bg-sky-500 text-white font-bold' : 'text-slate-400 hover:text-white'
                 }`}
+                title={`${s}x animation speed`}
               >
                 {s}x
               </button>
@@ -959,7 +961,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         <div className="flex items-center gap-2 self-end md:self-auto">
           <span className="text-slate-400 font-medium">Time/Div:</span>
           <div className="flex items-center bg-slate-900 border border-slate-700 rounded-lg p-0.5">
-            {[2, 5, 10, 20].map((tVal) => (
+            {[2, 5, 10, 20, 50].map((tVal) => (
               <button
                 key={tVal}
                 onClick={() => onMsPerDivChange(tVal)}

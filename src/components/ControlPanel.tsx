@@ -268,22 +268,53 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1.5">
           <div className="flex justify-between items-center text-xs">
             <span className="text-slate-400">Supply Frequency (f):</span>
-            <span className="font-mono font-bold text-slate-200">{params.frequency} Hz</span>
+            <span className="font-mono font-bold text-sky-400">{params.frequency} Hz</span>
           </div>
-          <div className="flex gap-2 pt-1">
+          <input
+            type="range"
+            min="5"
+            max="100"
+            step="5"
+            value={params.frequency}
+            onChange={(e) => onChange({ frequency: Number(e.target.value) })}
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
+          />
+          <div className="grid grid-cols-4 gap-1 pt-1">
+            <button
+              onClick={() => onChange({ frequency: 10 })}
+              className={`py-1 text-[11px] font-mono rounded border transition-colors ${
+                params.frequency === 10
+                  ? 'bg-sky-600 text-white font-bold border-sky-500'
+                  : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'
+              }`}
+              title="10 Hz - Slow AC for clear cycle study"
+            >
+              10 Hz (Slow)
+            </button>
+            <button
+              onClick={() => onChange({ frequency: 25 })}
+              className={`py-1 text-[11px] font-mono rounded border transition-colors ${
+                params.frequency === 25
+                  ? 'bg-sky-600 text-white font-bold border-sky-500'
+                  : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'
+              }`}
+              title="25 Hz - Traction / Half rate"
+            >
+              25 Hz
+            </button>
             <button
               onClick={() => onChange({ frequency: 50 })}
-              className={`flex-1 py-1 text-xs font-mono rounded border transition-colors ${
+              className={`py-1 text-[11px] font-mono rounded border transition-colors ${
                 params.frequency === 50
                   ? 'bg-sky-600 text-white font-bold border-sky-500'
                   : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'
               }`}
             >
-              50 Hz (India/EU)
+              50 Hz (IN/EU)
             </button>
             <button
               onClick={() => onChange({ frequency: 60 })}
-              className={`flex-1 py-1 text-xs font-mono rounded border transition-colors ${
+              className={`py-1 text-[11px] font-mono rounded border transition-colors ${
                 params.frequency === 60
                   ? 'bg-sky-600 text-white font-bold border-sky-500'
                   : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-white'

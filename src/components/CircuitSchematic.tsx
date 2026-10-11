@@ -173,24 +173,42 @@ export const CircuitSchematic: React.FC<CircuitSchematicProps> = ({
                 <circle cx="0" cy="0" r="24" fill="#0f172a" stroke="#38bdf8" strokeWidth="2.5" />
                 <path d="M -12 0 Q -6 -12 0 0 Q 6 12 12 0" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
                 <text x="0" y="38" fill="#94a3b8" fontSize="11" textAnchor="middle" fontWeight="500">Vs (AC)</text>
+                <text x="0" y="50" fill="#64748b" fontSize="9" textAnchor="middle">{voltagePeak}Vpk, {params.frequency}Hz</text>
               </g>
 
-              {/* AC Source Connection Wires to Bridge AC Nodes (200, 170) and (320, 170) */}
-              {/* Positive/Phase A wire to Left AC Node (200, 170) */}
-              <path d="M 70 146 L 70 115 L 200 115 L 200 170" fill="none" stroke="#38bdf8" strokeWidth="2" />
-              <circle cx="200" cy="170" r="4" fill="#38bdf8" />
-              <text x="180" y="165" fill="#38bdf8" fontSize="10" fontWeight="bold">AC 1</text>
+              {/* Source Top Terminal (70, 146) to Bridge AC Node 1 (200, 170) */}
+              {/* Clean Orthogonal line: up to y=110, across to x=200, down to (200, 170) */}
+              <path
+                d="M 70 146 L 70 110 L 200 110 L 200 170"
+                fill="none"
+                stroke="#38bdf8"
+                strokeWidth="2.5"
+              />
+              <circle cx="70" cy="146" r="3" fill="#38bdf8" />
+              <circle cx="200" cy="170" r="4.5" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+              <text x="176" y="166" fill="#38bdf8" fontSize="10" fontWeight="bold">AC 1</text>
 
-              {/* Return/Neutral wire to Right AC Node (320, 170) */}
-              <path d="M 70 194 L 70 225 L 320 225 L 320 170" fill="none" stroke="#38bdf8" strokeWidth="2" />
-              <circle cx="320" cy="170" r="4" fill="#38bdf8" />
-              <text x="335" y="165" fill="#38bdf8" fontSize="10" fontWeight="bold">AC 2</text>
+              {/* Source Bottom Terminal (70, 194) to Bridge AC Node 2 (330, 170) */}
+              {/* Clean route down to y=230, right across to x=330 with a visual bridge jumper hop over the left leg if needed, then up to (330, 170) */}
+              <path
+                d="M 70 194 L 70 230 L 192 230 M 208 230 L 330 230 L 330 170"
+                fill="none"
+                stroke="#38bdf8"
+                strokeWidth="2.5"
+              />
+              {/* Jumper arc at (200, 230) jumping cleanly over left leg */}
+              <path
+                d="M 192 230 A 8 8 0 0 1 208 230"
+                fill="none"
+                stroke="#38bdf8"
+                strokeWidth="2.5"
+              />
+              <circle cx="70" cy="194" r="3" fill="#38bdf8" />
+              <circle cx="330" cy="170" r="4.5" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+              <text x="342" y="166" fill="#38bdf8" fontSize="10" fontWeight="bold">AC 2</text>
 
-              {/* Bridge Arms */}
-              {/* Left Leg: Top switch connects from (200, 170) up to (200, 70), Bottom switch from (200, 170) down to (200, 270) */}
-              {/* Right Leg: Top switch connects from (320, 170) up to (320, 70), Bottom switch from (320, 170) down to (320, 270) */}
-
-              {/* Switch 1 (Top Left): T1 for controlled/semi, D1 for uncontrolled */}
+              {/* Bridge Arms - Leg 1 at x=200, Leg 2 at x=330 */}
+              {/* Switch 1 (Top Left): D1 (uncontrolled) or T1 (controlled/semi) */}
               <BridgeArmSwitch
                 x={200}
                 y={120}
@@ -200,9 +218,9 @@ export const CircuitSchematic: React.FC<CircuitSchematicProps> = ({
                 isTop={true}
               />
 
-              {/* Switch 3 (Top Right): T3 for controlled; D3 for uncontrolled; D1 for semi */}
+              {/* Switch 3 (Top Right): D3 (uncontrolled), T2 (semi), T3 (controlled) */}
               <BridgeArmSwitch
-                x={320}
+                x={330}
                 y={120}
                 isConducting={isD3On}
                 isSCR={topology === 'single_phase_full_wave_bridge_controlled'}
@@ -216,7 +234,7 @@ export const CircuitSchematic: React.FC<CircuitSchematicProps> = ({
                 isTop={true}
               />
 
-              {/* Switch 4 (Bottom Left): D4 or T4 */}
+              {/* Switch 4 (Bottom Left): D4 (uncontrolled), D2 (semi), T4 (controlled) */}
               <BridgeArmSwitch
                 x={200}
                 y={220}
@@ -232,9 +250,9 @@ export const CircuitSchematic: React.FC<CircuitSchematicProps> = ({
                 isTop={false}
               />
 
-              {/* Switch 2 (Bottom Right): D2 or T2 */}
+              {/* Switch 2 (Bottom Right): D2 (uncontrolled), D1 (semi), T2 (controlled) */}
               <BridgeArmSwitch
-                x={320}
+                x={330}
                 y={220}
                 isConducting={isD2On}
                 isSCR={topology === 'single_phase_full_wave_bridge_controlled'}
@@ -248,31 +266,41 @@ export const CircuitSchematic: React.FC<CircuitSchematicProps> = ({
                 isTop={false}
               />
 
-              {/* Positive DC Rail joining (200, 70) and (320, 70) and continuing to Load (520, 70) */}
+              {/* Positive DC Rail joining Leg 1 Top (200, 70), Leg 2 Top (330, 70), continuing to Load Top (520, 70) */}
               <path
-                d="M 200 70 L 320 70 L 520 70 L 520 125"
+                d="M 200 70 L 330 70 L 520 70 L 520 125"
                 fill="none"
                 stroke={isD1On || isD3On ? '#10b981' : '#475569'}
-                strokeWidth={isD1On || isD3On ? '3.5' : '2'}
+                strokeWidth={isD1On || isD3On ? '3.5' : '2.5'}
                 strokeDasharray={isD1On || isD3On ? '6 3' : 'none'}
               />
-              <circle cx="200" cy="70" r="3.5" fill="#38bdf8" />
-              <circle cx="320" cy="70" r="3.5" fill="#38bdf8" />
-              <circle cx="520" cy="70" r="3.5" fill="#38bdf8" />
-              <text x="390" y="62" fill="#38bdf8" fontSize="11" fontWeight="bold">+ DC Rail</text>
+              <circle cx="200" cy="70" r="4" fill="#38bdf8" />
+              <circle cx="330" cy="70" r="4" fill="#38bdf8" />
+              <circle cx="520" cy="70" r="4" fill="#38bdf8" />
+              <circle cx="520" cy="125" r="3.5" fill="#38bdf8" />
+              <text x="405" y="62" fill="#38bdf8" fontSize="11" fontWeight="bold">+ DC Rail (Cathodes)</text>
 
-              {/* Negative DC Rail joining (200, 270) and (320, 270) and returning from Load (520, 270) */}
+              {/* Negative DC Rail joining Leg 1 Bottom (200, 270), Leg 2 Bottom (330, 270), returning from Load Bottom (520, 215) */}
               <path
-                d="M 200 270 L 320 270 L 520 270 L 520 215"
+                d="M 200 270 L 330 270 L 520 270 L 520 215"
                 fill="none"
                 stroke={isD2On || isD4On ? '#10b981' : '#475569'}
-                strokeWidth={isD2On || isD4On ? '3.5' : '2'}
+                strokeWidth={isD2On || isD4On ? '3.5' : '2.5'}
                 strokeDasharray={isD2On || isD4On ? '6 3' : 'none'}
               />
-              <circle cx="200" cy="270" r="3.5" fill="#64748b" />
-              <circle cx="320" cy="270" r="3.5" fill="#64748b" />
-              <circle cx="520" cy="270" r="3.5" fill="#64748b" />
-              <text x="390" y="285" fill="#64748b" fontSize="11" fontWeight="bold">- DC Rail (Ground)</text>
+              <circle cx="200" cy="270" r="4" fill="#64748b" />
+              <circle cx="330" cy="270" r="4" fill="#64748b" />
+              <circle cx="520" cy="270" r="4" fill="#64748b" />
+              <circle cx="520" cy="215" r="3.5" fill="#64748b" />
+              <text x="405" y="285" fill="#64748b" fontSize="11" fontWeight="bold">- DC Rail (Anodes / Ref)</text>
+
+              {/* Ground Symbol on negative rail */}
+              <g transform="translate(425, 270)">
+                <line x1="0" y1="0" x2="0" y2="12" stroke="#64748b" strokeWidth="2" />
+                <line x1="-10" y1="12" x2="10" y2="12" stroke="#64748b" strokeWidth="2" />
+                <line x1="-6" y1="16" x2="6" y2="16" stroke="#64748b" strokeWidth="2" />
+                <line x1="-3" y1="20" x2="3" y2="20" stroke="#64748b" strokeWidth="2" />
+              </g>
 
               {/* Load Symbol */}
               <LoadSymbol x={520} y={170} loadType={loadType} params={params} isCurrent={isD1On || isD2On || isD3On || isD4On} />
